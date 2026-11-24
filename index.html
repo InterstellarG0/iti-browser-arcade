@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ITI Browser Arcade</title>
+<style>
+:root{color-scheme:dark;--bg:#101313;--panel:#191e1c;--line:#343f3a;--text:#f1f4ea;--muted:#bac8bf;--lime:#d5f58c;--amber:#ffcc8a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:17px/1.55 system-ui,sans-serif}main,header,footer{width:min(1120px,92%);margin:auto}header,footer{padding:20px 0;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}header{border-bottom:1px solid var(--line)}a{color:var(--lime)}a:hover{color:white}:focus-visible{outline:3px solid var(--amber);outline-offset:3px}h1,h2,h3,p{margin:0 0 .65rem}h1{font-size:clamp(3.2rem,9vw,7rem);line-height:.91;letter-spacing:-.085em;max-width:850px}h2{font-size:1.75rem}h3{line-height:1.15;font-size:1.28rem}.hero{padding:clamp(46px,9vw,100px) 0 42px}.eyebrow{font:700 .82rem ui-monospace,monospace;letter-spacing:.12em;color:var(--lime);margin-bottom:22px}.hero p:last-child{color:var(--muted);margin:24px 0 0}.featured{padding:26px;border:1px solid #73874d;background:linear-gradient(120deg,#262f1b,#19201b 80%);margin-bottom:42px}small,.muted{color:var(--muted)}.tools,form{display:flex;flex-wrap:wrap;align-items:end;gap:12px;margin:16px 0}label{display:grid;gap:5px;font-size:.9rem}input,select,button,.launch{font:inherit;border:1px solid #58665d;background:#222925;color:var(--text);min-height:44px;padding:8px 12px;border-radius:4px}button,.launch,summary{cursor:pointer}.launch{display:inline-block;background:var(--lime);color:#17220a;font-weight:750;text-decoration:none}.launch:hover{color:#17220a;background:#edffbc}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px}.card{display:flex;flex-direction:column;align-items:start;background:var(--panel);border:1px solid var(--line);padding:18px}.card p{font-size:.95rem}.card a{margin-top:auto}.badge{font:700 .77rem ui-monospace,monospace;color:var(--amber);margin-bottom:10px}.card small{margin-top:auto}details{margin:30px 0;border-top:1px solid var(--line);padding-top:14px}summary{font-weight:750}li{margin-bottom:8px}.charts{display:grid;gap:10px}.chart{display:grid;grid-template-columns:minmax(100px,1fr) 2fr;gap:10px}.chart p{margin:0}meter{width:100%;height:24px;display:block}footer{border-top:1px solid var(--line);margin-top:35px}footer a{white-space:nowrap}
+</style>
+</head>
+<body>
+<header><strong>INTERSTELLAR GAMING</strong><a href="https://github.com/InterstellarG0/iti-browser-arcade">GitHub repo</a></header>
+<main>
+<section class="hero">
+<p class="eyebrow">ITI / KIT 001</p>
+<h1>Browser Arcade</h1>
+<p>Free browser games for the picnic table or your own device. No launcher.</p>
+</section>
+<section class="featured" aria-labelledby="feature-title">
+<p class="eyebrow">ITI ORIGINAL</p>
+<h2 id="feature-title">Interstellar Ants</h2>
+<p>Walk a living 3D ant colony. Choose <strong>Run game</strong> on itch.io.</p>
+<a class="launch" href="https://interstellarg0.itch.io/interstellar-ants" target="_blank" rel="noopener noreferrer">Open Interstellar Ants ↗</a>
+</section>
+<section aria-labelledby="catalog-title">
+<h2 id="catalog-title">From the viral list</h2>
+<p class="muted">These external pages were reviewed for signs of a game. Gameplay and controller support still need a laptop test. Some ports use your own game files.</p>
+<div class="tools">
+<label>Search<input id="query" type="search" placeholder="Search titles"></label>
+<label>Category<select id="category"><option>All categories</option><option>Shooters</option><option>Open world / other</option></select></label>
+</div>
+<p id="result" class="muted" aria-live="polite"></p>
+<div id="cards" class="grid"></div>
+<details><summary id="review-title">Links under review</summary><ul id="review"></ul></details>
+</section>
+<details>
+<summary>Kit 001 playtest log</summary>
+<p>Log one trial per attempt. For a successful launch, time from clicking the catalog link until you can control the game. Record input and same-laptop two-player results on the ThinkPad. Results stay in this browser until you export them.</p>
+<form id="playtest">
+<label>Game<select name="game" required></select></label>
+<label>Site revision<input name="revision" value="v0.1" maxlength="24" required></label>
+<label>Outcome<select name="outcome"><option value="success">Reached gameplay</option><option value="failed">Failed to start</option></select></label>
+<label id="time-label">Seconds to play<input name="seconds" type="number" min="0" max="3600" required></label>
+<label>Input tested<select name="input"><option>Untested</option><option>Keyboard/mouse</option><option>One controller</option><option>Two controllers</option><option>Touch</option></select></label>
+<label>Local two-player result<select name="local"><option>Untested</option><option>Works</option><option>Did not work</option></select></label>
+<button>Save trial</button>
+</form>
+<p id="save-state" role="status"></p>
+<h3>Results by game and revision</h3>
+<div id="charts" class="charts"></div>
+<button id="export" type="button">Export CSV</button>
+</details>
+</main>
+<footer><span>ITI • Keep building.</span><a href="https://github.com/InterstellarG0/iti-browser-arcade/issues/new">Report a broken link ↗</a></footer>
+<script>
+const original = 'Interstellar Ants';
+const catalog = [
+  ['BO1 Zombies','Zombies','https://vel.gg/bo1z','hold','Destination could not be confirmed.'],
+  ['Moon','Zombies','https://moon-zombies.pages.dev','hold','Redirect page points to lkgp.pro.'],
+  ['Kino der Toten','Zombies','https://kino-der-toten.pages.dev','hold','Redirect page points to lkgp.pro.'],
+  ['BO3 Cheese Cube','Zombies','https://cheese-cube.pages.dev','hold','Redirect page points to lkgp.pro.'],
+  ['Black Ops 2','Shooters','https://vibeslops.luckeysystems.com','hold','The page returned no readable game content.'],
+  ['Modern Warfare 2','Shooters','https://ovz-game-production.up.railway.app','hold','Game identity and launch need a browser test.'],
+  ['Halo CE / Combat Lab','Shooters','https://mitchellhynes.com/combat-lab/','listed','Bring your own compatible game files. Keyboard and mouse listed.'],
+  ['Halo CE mobile','Shooters','https://hcemobile.com','listed','The site offers a browser option. Check its setup guide and required files.'],
+  ['Quake 1','Shooters','https://q1.pieter.com','listed','Unofficial browser preservation project.'],
+  ['Quake 2','Shooters','https://q2.pieter.com','listed','Unofficial browser preservation project.'],
+  ['Quake 3','Shooters','https://q3.pieter.com','listed','Browser game page found.'],
+  ['Return to Castle Wolfenstein','Shooters','https://rtcw.pieter.com','listed','Unofficial browser preservation project.'],
+  ['Unreal Tournament','Shooters','https://ut.pieter.com','hold','This address now shows Urban Terror.'],
+  ['Half-Life','Shooters','https://pixelsuft.github.io/hl/','listed','Browser port page found. Check file requirements before play.'],
+  ['Half-Life / CS 1.6','Shooters','https://x8bitrain.github.io/webXash/','hold','The page returned no readable game content.'],
+  ['CS Surf','Shooters','https://surfd.net','listed','Browser surf game page found.'],
+  ['Diablo','Open world / other','https://johnimril.github.io/diablo_web/','listed','Browser port with a player guide for controls, saves and multiplayer.'],
+  ['GTA 5','Open world / other','https://t.co/rprCDk4bY5','hold','Original archive link could not be resolved.'],
+  ['GTA Vice City','Open world / other','https://joncodeofficial.github.io/gta-vice-city-','hold','The supplied address returned 404.'],
+  ['The Simpsons: Hit & Run','Open world / other','https://shar-wasm.cjoseph.workers.dev/?skipmovie','hold','Game identity and launch need a browser test.'],
+  ['Skate 3','Open world / other','https://skate.aaddpp.lol','hold','Page found. Game requirements and launch need a browser test.'],
+  ['Skate Rust','Open world / other','https://global-terror.net','hold','The supplied address shows unrelated content.'],
+  ['PES 6','Open world / other','https://pes6.optijuegos.net','listed','Game page found. Browser controls need a playtest.'],
+  ['Hedgewars','Open world / other','https://webwars.link','hold','Destination could not be confirmed.'],
+  ['More GTA / Minecraft','Open world / other','https://wasmarcade.com','hold','Directory found. Review title availability and file requirements before adding individual games.']
+];
+const get = id => document.getElementById(id);
+const listed = catalog.filter(([, , , status]) => status === 'listed');
+const held = catalog.filter(([, , , status]) => status === 'hold');
+function element(tag, text, parent, className) {
+  const node = document.createElement(tag);
+  node.textContent = text;
+  if (className) node.className = className;
+  parent.append(node);
+  return node;
+}
+function renderCatalog() {
+  const term = get('query').value.trim().toLowerCase();
+  const category = get('category').value;
+  const rows = listed.filter(([name, group]) =>
+    name.toLowerCase().includes(term) && (category === 'All categories' || category === group));
+  get('cards').replaceChildren();
+  get('result').textContent = rows.length ? `${rows.length} game pages found` : 'No matching game pages.';
+  for (const [name, group, url, , note] of rows) {
+    const card = element('article', '', get('cards'), 'card');
+    element('span', group, card, 'badge');
+    element('h3', name, card);
+    element('p', note, card);
+    const link = element('a', 'Open game page ↗', card);
+    link.setAttribute('aria-label', `Open ${name} game page in a new tab`);
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+  }
+}
+get('query').addEventListener('input', renderCatalog);
+get('category').addEventListener('change', renderCatalog);
+renderCatalog();
+get('review-title').textContent = `Links under review (${held.length})`;
+for (const [name, , , , note] of held) element('li', `${name} · ${note}`, get('review'));
+const form = get('playtest');
+for (const name of [original, ...listed.map(([name]) => name)]) element('option', name, form.elements.game);
+const logKey = 'iti-browser-arcade.playtests.v1';
+let trials = [];
+try {
+  const saved = JSON.parse(localStorage.getItem(logKey) || '[]');
+  if (Array.isArray(saved)) trials = saved;
+} catch {}
+form.elements.outcome.addEventListener('change', () => {
+  const failed = form.elements.outcome.value === 'failed';
+  form.elements.seconds.disabled = failed;
+  get('time-label').hidden = failed;
+  get('time-label').style.display = failed ? 'none' : '';
+});
+form.addEventListener('submit', event => {
+  event.preventDefault();
+  const values = new FormData(form);
+  const trial = {
+    date: new Date().toISOString().slice(0, 10),
+    game: values.get('game'), revision: values.get('revision').trim(),
+    outcome: values.get('outcome'), seconds: values.has('seconds') ? Number(values.get('seconds')) : null,
+    input: values.get('input'), local: values.get('local')
+  };
+  if (!trial.revision) {
+    get('save-state').textContent = 'Enter a site revision before saving.';
+    return;
+  }
+  trials.push(trial);
+  try {
+    localStorage.setItem(logKey, JSON.stringify(trials));
+    get('save-state').textContent = 'Trial saved in this browser.';
+  } catch {
+    get('save-state').textContent = 'Storage unavailable. Export the trial before leaving this page.';
+  }
+  form.elements.seconds.value = '';
+  renderCharts();
+});
+function renderCharts() {
+  const charts = get('charts');
+  charts.replaceChildren();
+  get('export').disabled = !trials.length;
+  if (!trials.length) {
+    element('p', 'No playtests recorded yet.', charts, 'muted');
+    return;
+  }
+  const groups = new Map();
+  for (const trial of trials) {
+    const key = JSON.stringify([trial.game, trial.revision]);
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(trial);
+  }
+  for (const rows of groups.values()) {
+    const {game, revision} = rows[0];
+    const passes = rows.filter(row => row.outcome === 'success');
+    const times = passes.map(row => row.seconds).sort((left, right) => left - right);
+    const mid = Math.floor(times.length / 2);
+    const median = times.length % 2 ? times[mid] : (times[mid - 1] + times[mid]) / 2;
+    const chart = element('div', '', charts, 'chart');
+    element('p', `${game} · ${revision}`, chart);
+    const data = element('div', '', chart);
+    const description = `${passes.length}/${rows.length} reached gameplay`;
+    const meter = element('meter', description, data);
+    meter.max = rows.length;
+    meter.value = passes.length;
+    meter.setAttribute('aria-label', description);
+    element('small', times.length ? `${description} · Median ${median} s` : description, data);
+  }
+}
+get('export').addEventListener('click', () => {
+  const columns = ['date', 'game', 'revision', 'outcome', 'seconds', 'input', 'local'];
+  const csvCell = value => {
+    const text = String(value ?? '');
+    return '"' + (/^[=+\-@\t\r\n]/.test(text) ? "'" : '') + text.replaceAll('"', '""') + '"';
+  };
+  const csv = [columns.join(','), ...trials.map(row => columns.map(key => csvCell(row[key])).join(','))].join('\r\n');
+  const url = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'}));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'ITI_Arcade_Playtests.csv';
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+renderCharts();
+</script>
+</body>
+</html>
