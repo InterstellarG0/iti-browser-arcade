@@ -2,6 +2,10 @@
 
 [A free browser-game catalog by Interstellar Gaming](https://interstellarg0.github.io/iti-browser-arcade/), built for the Kit 001 picnic-table ThinkPad and visitors using their own devices. Interstellar Ants is the featured ITI original. The 25 links supplied from the viral post are tracked in `index.html`. External games remain on their respective sites.
 
+## Brand colors
+
+ITI business rule #2 applies to the arcade and its artwork. Use the established black (#0c0c0e), red (#ff7779), and gold (#f4c76d) palette from ITI Trading Foundry. Card images are original illustrations inspired by each game's setting.
+
 ## Link status
 
 - **Game page found** means the destination appears to be the advertised game or browser port. It can still require game files, a sizable browser download or particular hardware.
