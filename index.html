@@ -8,7 +8,9 @@
 :root{color-scheme:dark;--bg:#0c0c0e;--panel:#161619;--line:#343034;--text:#fcf5eb;--muted:#bdb6b6;--gold:#f4c76d;--red:#ff7779;--control:#201e20;--control-line:#50444a;--glow:#291517}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 85% 0,var(--glow),transparent 47%),var(--bg);color:var(--text);font:17px/1.55 system-ui,sans-serif}main,header,footer{width:min(1120px,92%);margin:auto}header,footer{padding:20px 0;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}header{border-bottom:1px solid var(--line)}header strong{color:var(--gold);border-left:4px solid var(--red);padding-left:12px}a{color:var(--gold)}a:hover{color:white}:focus-visible{outline:3px solid var(--red);outline-offset:3px}h1,h2,h3,p{margin:0 0 .65rem}h1{font-size:clamp(3.2rem,9vw,7rem);line-height:.91;letter-spacing:-.085em;max-width:850px}h2{font-size:1.75rem}h3{line-height:1.15;font-size:1.28rem}.hero{padding:clamp(46px,9vw,100px) 0 42px}.eyebrow{font:700 .82rem ui-monospace,monospace;letter-spacing:.12em;color:var(--gold);margin-bottom:22px}.hero p:last-child{color:var(--muted);margin:24px 0 0}.featured{padding:26px;border:1px solid var(--red);background:linear-gradient(120deg,var(--glow),var(--panel) 80%);margin-bottom:42px}small,.muted{color:var(--muted)}.tools,form{display:flex;flex-wrap:wrap;align-items:end;gap:12px;margin:16px 0}label{display:grid;gap:5px;font-size:.9rem}input,select,button,.launch{font:inherit;border:1px solid var(--control-line);background:var(--control);color:var(--text);min-height:44px;padding:8px 12px;border-radius:4px}button,.launch,summary{cursor:pointer}.launch{display:inline-block;background:var(--gold);color:#17120a;font-weight:750;text-decoration:none}.launch:hover{color:#17120a;background:var(--text)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px}.card{display:flex;flex-direction:column;align-items:start;background:var(--panel);border:1px solid var(--line);padding:18px}.card p{font-size:.95rem}.card a{margin-top:auto}.badge{font:700 .77rem ui-monospace,monospace;color:var(--red);margin-bottom:10px}.card small{margin-top:auto}details{margin:30px 0;border-top:1px solid var(--line);padding-top:14px}summary{font-weight:750}li{margin-bottom:8px}.charts{display:grid;gap:10px}.chart{display:grid;grid-template-columns:minmax(100px,1fr) 2fr;gap:10px}.chart p{margin:0}meter{width:100%;height:24px;display:block}footer{border-top:1px solid var(--line);margin-top:35px}footer a{white-space:nowrap}
 .game-art{position:relative;display:block;width:100%;--tile-ratio:9/8;aspect-ratio:16/9;overflow:hidden;margin:0 0 14px;background:var(--glow)}
-.game-art::before{content:"";position:absolute;top:50%;left:0;width:100%;aspect-ratio:var(--tile-ratio);transform:translateY(-50%);background:url('assets/arcade-art.webp') var(--art-x) var(--art-y)/400% 300% no-repeat}
+.game-art::before{content:"";position:absolute;top:50%;left:0;width:100%;aspect-ratio:var(--tile-ratio);transform:translateY(-50%);background:var(--art-image,url('assets/arcade-art.webp')) var(--art-x) var(--art-y)/var(--art-size,400% 300%) no-repeat}
+.game-art.new-art{--art-image:url('assets/arcade-additions.webp');--art-size:200% 200%;--tile-ratio:16/9}
+#files-section{margin-top:32px}
 .featured .game-art{max-width:540px;aspect-ratio:2.4}
 meter::-webkit-meter-optimum-value,meter::-webkit-meter-suboptimum-value,meter::-webkit-meter-even-less-good-value{background:var(--gold)}
 meter::-moz-meter-bar{background:var(--gold)}
@@ -30,14 +32,19 @@ meter::-moz-meter-bar{background:var(--gold)}
 <a class="launch" href="https://interstellarg0.itch.io/interstellar-ants" target="_blank" rel="noopener noreferrer">Open Interstellar Ants ↗</a>
 </section>
 <section aria-labelledby="catalog-title">
-<h2 id="catalog-title">From the viral list</h2>
+<h2 id="catalog-title">Game catalog</h2>
 <p class="muted">These external pages were reviewed for signs of a game. Gameplay and controller support still need a laptop test. Some ports use your own game files. Card art is illustrated.</p>
 <div class="tools">
 <label>Search<input id="query" type="search" placeholder="Search titles"></label>
-<label>Category<select id="category"><option>All categories</option><option>Shooters</option><option>Open world / other</option></select></label>
+<label>Category<select id="category"><option>All categories</option><option>Shooters</option><option>Open world / other</option><option>Racing</option></select></label>
 </div>
 <p id="result" class="muted" aria-live="polite"></p>
 <div id="cards" class="grid"></div>
+<section id="files-section" aria-labelledby="files-title" hidden>
+<h3 id="files-title">Bring your own game files</h3>
+<p class="muted">These versions need game data from a copy you own.</p>
+<div id="file-cards" class="grid"></div>
+</section>
 <details><summary id="review-title">Links under review</summary><ul id="review"></ul></details>
 </section>
 <details>
@@ -45,7 +52,7 @@ meter::-moz-meter-bar{background:var(--gold)}
 <p>Log one trial per attempt. For a successful launch, time from clicking the catalog link until you can control the game. Record input and same-laptop two-player results on the ThinkPad. Results stay in this browser until you export them.</p>
 <form id="playtest">
 <label>Game<select name="game" required></select></label>
-<label>Site revision<input name="revision" value="v0.2" maxlength="24" required></label>
+<label>Site revision<input name="revision" value="v0.3" maxlength="24" required></label>
 <label>Outcome<select name="outcome"><option value="success">Reached gameplay</option><option value="failed">Failed to start</option></select></label>
 <label id="time-label">Seconds to play<input name="seconds" type="number" min="0" max="3600" required></label>
 <label>Input tested<select name="input"><option>Untested</option><option>Keyboard/mouse</option><option>One controller</option><option>Two controllers</option><option>Touch</option></select></label>
@@ -68,8 +75,6 @@ const catalog = [
   ['BO3 Cheese Cube','Zombies','https://cheese-cube.pages.dev','hold','Redirect page points to lkgp.pro.'],
   ['Black Ops 2','Shooters','https://vibeslops.luckeysystems.com','hold','The page returned no readable game content.'],
   ['Modern Warfare 2','Shooters','https://ovz-game-production.up.railway.app','hold','Game identity and launch need a browser test.'],
-  ['Halo CE / Combat Lab','Shooters','https://mitchellhynes.com/combat-lab/','listed','Bring your own compatible game files. Keyboard and mouse listed.'],
-  ['Halo CE mobile','Shooters','https://hcemobile.com','listed','The site offers a browser option. Check its setup guide and required files.'],
   ['Quake 1','Shooters','https://q1.pieter.com','listed','Unofficial browser preservation project.'],
   ['Quake 2','Shooters','https://q2.pieter.com','listed','Unofficial browser preservation project.'],
   ['Quake 3','Shooters','https://q3.pieter.com','listed','Browser game page found.'],
@@ -78,18 +83,39 @@ const catalog = [
   ['Half-Life','Shooters','https://pixelsuft.github.io/hl/','listed','Browser port page found. Check file requirements before play.'],
   ['Half-Life / CS 1.6','Shooters','https://x8bitrain.github.io/webXash/','hold','The page returned no readable game content.'],
   ['CS Surf','Shooters','https://surfd.net','listed','Browser surf game page found.'],
-  ['Diablo','Open world / other','https://johnimril.github.io/diablo_web/','listed','Browser port with a player guide for controls, saves and multiplayer.'],
+  ['Diablo','Open world / other','https://johnimril.github.io/diablo_web/','listed','Free shareware demo with no personal game files required. The full game is listed below.'],
   ['GTA 5','Open world / other','https://t.co/rprCDk4bY5','hold','Original archive link could not be resolved.'],
   ['GTA Vice City','Open world / other','https://joncodeofficial.github.io/gta-vice-city-','hold','The supplied address returned 404.'],
   ['The Simpsons: Hit & Run','Open world / other','https://shar-wasm.cjoseph.workers.dev/?skipmovie','hold','Game identity and launch need a browser test.'],
   ['Skate 3','Open world / other','https://skate.aaddpp.lol','hold','Page found. Game requirements and launch need a browser test.'],
   ['Skate Rust','Open world / other','https://global-terror.net','hold','The supplied address shows unrelated content.'],
-  ['PES 6','Open world / other','https://pes6.optijuegos.net','listed','Game page found. Browser controls need a playtest.'],
+  ['PES 6','Open world / other','https://pes6.optijuegos.net','listed','The port lists keyboard, gamepad, touch and online play. ThinkPad performance is untested.'],
   ['Hedgewars','Open world / other','https://webwars.link','hold','Destination could not be confirmed.'],
-  ['More GTA / Minecraft','Open world / other','https://wasmarcade.com','hold','Directory found. Review title availability and file requirements before adding individual games.']
+  ['More GTA / Minecraft','Open world / other','https://wasmarcade.com','hold','Directory found. Review title availability and file requirements before adding individual games.'],
+  ["Kart Chaos","Racing","https://kartchaos.com/","listed","Solo kart racing or private online rooms across phones and computers. Keyboard, gamepad and touch. One device per racer."],
+  ["PolyTrack","Racing","https://www.kodub.com/apps/polytrack","listed","Stunt tracks, time trials and a track editor. Keyboard controls documented."],
+  ["Narrow One","Shooters","https://narrow.one/","listed","5v5 capture-the-flag archery with squad mode. The developer lists gamepad and touch support."],
+  ["War Brokers","Shooters","https://warbrokers.itch.io/war-brokers","listed","Online first-person shooter with team modes and vehicles. Keyboard and mouse."],
+  ["Diablo — full game","Open world / other","https://johnimril.github.io/diablo_web/","files","The full game requires DIABDAT.MPQ from your own copy. The free demo is listed above."],
+  ["Halo CE / Combat Lab","Shooters","https://mitchellhynes.com/combat-lab/","files","Requires an XISO from your own original Xbox Halo CE disc. The site lists browser multiplayer."],
+  ["Halo CE mobile","Shooters","https://hcemobile.com/","files","Choose Continue in the browser and bring your own verified Xbox ISO or XISO. Online multiplayer requires an account."]
 ];
 const get = id => document.getElementById(id);
-const listed = catalog.filter(([, , , status]) => status === 'listed');
+const listed = catalog.filter(([, , , status]) => status !== 'hold');
+const originalArt = new Map([
+  ["Halo CE / Combat Lab", 1],
+  ["Halo CE mobile", 2],
+  ["Quake 1", 3],
+  ["Quake 2", 4],
+  ["Quake 3", 5],
+  ["Return to Castle Wolfenstein", 6],
+  ["Half-Life", 7],
+  ["CS Surf", 8],
+  ["Diablo", 9],
+  ["PES 6", 10],
+  ["Diablo — full game", 9]
+]);
+const newArt = ["Kart Chaos","PolyTrack","Narrow One","War Brokers"];
 const held = catalog.filter(([, , , status]) => status === 'hold');
 function element(tag, text, parent, className) {
   const node = document.createElement(tag);
@@ -103,16 +129,29 @@ function renderCatalog() {
   const category = get('category').value;
   const rows = listed.filter(([name, group]) =>
     name.toLowerCase().includes(term) && (category === 'All categories' || category === group));
-  get('cards').replaceChildren();
-  get('result').textContent = rows.length ? `${rows.length} game pages found` : 'No matching game pages.';
-  for (const row of rows) {
-    const [name, group, url, , note] = row;
-    const tile = listed.indexOf(row) + 1;
-    const card = element('article', '', get('cards'), 'card');
+  const primary = rows.filter(([, , , status]) => status === 'listed');
+  const ownFiles = rows.filter(([, , , status]) => status === 'files');
+  get('result').textContent = rows.length ? `${rows.length} listings` : 'No matching games.';
+  renderCards(primary, get('cards'));
+  renderCards(ownFiles, get('file-cards'));
+  get('files-section').hidden = !ownFiles.length;
+}
+function renderCards(rows, container) {
+  container.replaceChildren();
+  for (const [name, group, url, , note] of rows) {
+    const card = element('article', '', container, 'card');
     const art = element('div', '', card, 'game-art');
     art.setAttribute('aria-hidden', 'true');
-    art.style.setProperty('--art-x', `${(tile % 4) * 100 / 3}%`);
-    art.style.setProperty('--art-y', `${Math.floor(tile / 4) * 50}%`);
+    if (originalArt.has(name)) {
+      const tile = originalArt.get(name);
+      art.style.setProperty('--art-x', `${(tile % 4) * 100 / 3}%`);
+      art.style.setProperty('--art-y', `${Math.floor(tile / 4) * 50}%`);
+    } else {
+      const tile = newArt.indexOf(name);
+      art.classList.add('new-art');
+      art.style.setProperty('--art-x', `${(tile % 2) * 100}%`);
+      art.style.setProperty('--art-y', `${Math.floor(tile / 2) * 100}%`);
+    }
     element('span', group, card, 'badge');
     element('h3', name, card);
     element('p', note, card);

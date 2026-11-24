@@ -9,6 +9,7 @@ ITI business rule #2 applies to the arcade and its artwork. Use the established 
 ## Link status
 
 - **Game page found** means the destination appears to be the advertised game or browser port. It can still require game files, a sizable browser download or particular hardware.
+- **Bring your own game files** appears after the main game listings and includes full Diablo plus both Halo ports. Diablo shareware remains in the main list because it starts without personal game files.
 - **Under review** keeps the supplied URL in the source without a public launch button. Keep redirect chains and title mismatches under review until resolved.
 - A successful field test reaches playable input without a launcher. Verify controller, touch, local two-player and online multiplayer independently. Record relevant game-file requirements and use terms before putting an external game on the Kit 001 quick-play shortlist.
 
