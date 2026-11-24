@@ -2,6 +2,10 @@
 
 [A free browser-game catalog by Interstellar Gaming](https://interstellarg0.github.io/iti-browser-arcade/), built for the Kit 001 picnic-table ThinkPad and visitors using their own devices. Interstellar Ants is the featured ITI original. The 25 links supplied from the viral post are tracked in `index.html`. External games remain on their respective sites.
 
+## Version history
+
+[CHANGELOG.md](CHANGELOG.md) also feeds the live arcade’s **Patch notes** and sets its default playtest revision. For each published change, add a dated entry at the top with a three-part version and plain-text bullets. Increment the patch number for fixes and the minor number for catalog or feature batches. Use the heading format `## v0.3.1 — 2026-11-24`. Existing field logs retain the version recorded when the trial was saved.
+
 ## Brand colors
 
 ITI business rule #2 applies to the arcade and its artwork. Use the established black (#0c0c0e), red (#ff7779), and gold (#f4c76d) palette from ITI Trading Foundry. Card images are original illustrations inspired by each game's setting.
@@ -22,4 +26,4 @@ ITI business rule #2 applies to the arcade and its artwork. Use the established 
 
 The log stays in the browser that recorded it, with CSV export for comparisons across devices. No central telemetry is configured. External games require internet access and may have independent terms and data practices.
 
-To preview the static site, open `index.html` in a browser. GitHub Pages serves it from the root of `main`.
+To preview the site and its changelog locally, serve the repository root with `python -m http.server 8000` and open `http://localhost:8000/`. GitHub Pages serves it from the root of `main`.

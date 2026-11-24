@@ -52,7 +52,7 @@ meter::-moz-meter-bar{background:var(--gold)}
 <p>Log one trial per attempt. For a successful launch, time from clicking the catalog link until you can control the game. Record input and same-laptop two-player results on the ThinkPad. Results stay in this browser until you export them.</p>
 <form id="playtest">
 <label>Game<select name="game" required></select></label>
-<label>Site revision<input name="revision" value="v0.3" maxlength="24" required></label>
+<label>Site revision<input name="revision" maxlength="24" required></label>
 <label>Outcome<select name="outcome"><option value="success">Reached gameplay</option><option value="failed">Failed to start</option></select></label>
 <label id="time-label">Seconds to play<input name="seconds" type="number" min="0" max="3600" required></label>
 <label>Input tested<select name="input"><option>Untested</option><option>Keyboard/mouse</option><option>One controller</option><option>Two controllers</option><option>Touch</option></select></label>
@@ -64,8 +64,13 @@ meter::-moz-meter-bar{background:var(--gold)}
 <div id="charts" class="charts"></div>
 <button id="export" type="button">Export CSV</button>
 </details>
+<details id="patch-notes">
+<summary>Patch notes <span id="patch-version"></span></summary>
+<div id="patch-history"><p class="muted">Loading patch notes…</p></div>
+<p><a href="https://github.com/InterstellarG0/iti-browser-arcade/blob/main/CHANGELOG.md">View changelog on GitHub</a></p>
+</details>
 </main>
-<footer><span>ITI • Keep building.</span><a href="https://github.com/InterstellarG0/iti-browser-arcade/issues/new">Report a broken link ↗</a></footer>
+<footer><span>ITI • Keep building.</span><a href="#patch-notes" id="footer-version">Patch notes</a><a href="https://github.com/InterstellarG0/iti-browser-arcade/issues/new">Report a broken link ↗</a></footer>
 <script>
 const original = 'Interstellar Ants';
 const catalog = [
@@ -131,7 +136,7 @@ function renderCatalog() {
     name.toLowerCase().includes(term) && (category === 'All categories' || category === group));
   const primary = rows.filter(([, , , status]) => status === 'listed');
   const ownFiles = rows.filter(([, , , status]) => status === 'files');
-  get('result').textContent = rows.length ? `${rows.length} listings` : 'No matching games.';
+  get('result').textContent = rows.length ? `${rows.length} ${rows.length === 1 ? 'listing' : 'listings'}` : 'No matching games.';
   renderCards(primary, get('cards'));
   renderCards(ownFiles, get('file-cards'));
   get('files-section').hidden = !ownFiles.length;
@@ -168,6 +173,43 @@ renderCatalog();
 get('review-title').textContent = `Links under review (${held.length})`;
 for (const [name, , , , note] of held) element('li', `${name} · ${note}`, get('review'));
 const form = get('playtest');
+async function loadPatchNotes() {
+  const history = get('patch-history');
+  try {
+    const response = await fetch('CHANGELOG.md', {cache:'no-cache'});
+    if (!response.ok) throw new Error('Changelog unavailable');
+    const releases = [];
+    for (const line of (await response.text()).split(/\r?\n/)) {
+      const heading = /^## (v\d+\.\d+\.\d+) — (\d{4}-\d{2}-\d{2})$/.exec(line);
+      if (heading) releases.push({version:heading[1], date:heading[2], changes:[]});
+      if (line.startsWith('- ') && releases.length) releases.at(-1).changes.push(line.slice(2));
+    }
+    if (!releases.length || releases.some(release => !release.changes.length)) {
+      throw new Error('Changelog format is invalid');
+    }
+    const {version} = releases[0];
+    const revision = form.elements.revision;
+    const alreadyEdited = revision.value !== revision.defaultValue;
+    const enteredRevision = revision.value;
+    revision.defaultValue = version;
+    if (alreadyEdited) revision.value = enteredRevision;
+
+    get('patch-version').textContent = version;
+    get('footer-version').textContent = version + ' · Patch notes';
+    history.replaceChildren();
+    for (const release of releases) {
+      element('h3', release.version + ' · ' + release.date, history);
+      const changes = element('ul', '', history);
+      for (const change of release.changes) element('li', change, changes);
+    }
+  } catch {
+    history.textContent = 'Patch notes are available on GitHub.';
+  }
+}
+get('footer-version').addEventListener('click', () => {
+  get('patch-notes').open = true;
+});
+loadPatchNotes();
 for (const name of [original, ...listed.map(([name]) => name)]) element('option', name, form.elements.game);
 const logKey = 'iti-browser-arcade.playtests.v1';
 let trials = [];
